@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: Repair statuses
-Plugin URI: 
+Plugin URI: https://bitbucket.org/etruel/repair-statuses
 Description: Read the info from a hosted csv file and allow the clients to see its repair status from a Wordpress page via ajax 
 Version: 1.2
 Author: esteban
@@ -26,7 +26,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 
 
 // Plugin version
-if ( ! defined('WPE_REPARA_VERSION' ) ) define('WPE_REPARA_VERSION', '1.1' ); 
+if ( ! defined('WPE_REPARA_VERSION' ) ) define('WPE_REPARA_VERSION', '1.2' ); 
 
 if ( ! class_exists( 'REPARA' ) ) :
 
@@ -44,11 +44,19 @@ class REPARA {
 		$this->setupGlobals();
 		$this->includes();
 		$this->loadTextDomain();
+		
+		add_action( 'plugins_loaded', array($this,'repara_git_updater') );
 	}
 	private function includes() {
 		require_once REPARA_PLUGIN_DIR . 'includes/functions.php'; 
 		do_action('REPARA_include_files');
 		
+	}
+	function repara_git_updater() {
+		if ( is_admin() && !class_exists( 'GPU_Controller' ) ) {
+			require_once dirname( __FILE__ ) . '/git-plugin-updates/git-plugin-updates.php';
+			add_action( 'plugins_loaded', 'GPU_Controller::get_instance', 20 );
+		}
 	}
 	private function setupGlobals() {
 

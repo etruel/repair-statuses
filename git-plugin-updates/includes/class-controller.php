@@ -160,6 +160,9 @@ class GPU_Controller {
 		if ( empty( $transient->last_checked ) && empty( $transient->checked ) ) {
 			return $transient;
 		}
+//		$this->plugins = get_site_transient( $transient_key );
+
+		if ( false === $this->plugins ) return $transient;
 
 		// Iterate over all plugins
 		foreach( (array) $this->plugins as $plugin ) {
@@ -331,6 +334,11 @@ class GPU_Controller {
 	public function upgrader_post_install( $true, $hook_extra, $result ) {
 
 		global $wp_filesystem;
+ 
+		if ( ! isset( $hook_extra['plugin'] ) ) {
+			// A theme (not a plugin has just been updated)
+			return $result;
+		}
 
 		$plugin_key = dirname($hook_extra['plugin']);
 

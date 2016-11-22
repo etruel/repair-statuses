@@ -113,7 +113,9 @@ abstract class GPU_Updater {
 	 * @return array         Parsed plugin URI
 	 */
 	public static function parse_plugin_uri( $plugin ) {
-
+		
+		$url = '';
+		
 		if ( !empty( $plugin['Git URI'] ) ) {
 			$url = parse_url( $plugin['Git URI'] );
 		}elseif ( apply_filters( 'gpu_use_plugin_uri_header', false ) ) {
@@ -242,6 +244,8 @@ abstract class GPU_Updater {
 
 		// parse_plugin_uri() defined in GPU_Updater
 		$uri  = self::parse_plugin_uri( $plugin );
+		if ( empty( $uri ) ) return;
+		
 		$path = explode('/', $uri['path'] );
 		$this->host       = $uri['host'];
 
