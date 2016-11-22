@@ -3,7 +3,7 @@
 Plugin Name: Repair statuses
 Plugin URI: https://bitbucket.org/etruel/repair-statuses
 Description: Read the info from a hosted csv file and allow the clients to see its repair status from a Wordpress page via ajax 
-Version: 1.2
+Version: 1.3
 Author: esteban
 Author URI: https://etruel.com
 License: GPLv2
@@ -26,7 +26,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 
 
 // Plugin version
-if ( ! defined('WPE_REPARA_VERSION' ) ) define('WPE_REPARA_VERSION', '1.2' ); 
+if ( ! defined('WPE_REPARA_VERSION' ) ) define('WPE_REPARA_VERSION', '1.3' ); 
 
 if ( ! class_exists( 'REPARA' ) ) :
 

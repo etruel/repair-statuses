@@ -2,7 +2,7 @@
 Contributors: etruel
 Requires at least: 4.1
 Tested up to: 4.6.1
-Stable tag: 1.2
+Stable tag: 1.3
 License: GPLv2
 
 Consulta los estados de reparaciones desde un archivo externo y permite la consulta de estado por número de Orden desde el front-end.
