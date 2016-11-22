@@ -13,7 +13,7 @@ function print_reparaciones_form($attr = '') {
 	/* Merge the defaults and the given attributes. */
 	$attr = shortcode_atts( array( 'before' => '', 'after' => '' ), $attr );
 
-	$form  = '<ul><li>Nro: <input type="number" min=0 name="order_number" id="order_number" value=""></li>';
+	$form  = '<ul class="orderfield"><li>Nro: <input type="number" min=0 name="order_number" id="order_number" value=""></li>';
 	$form .= '<li><button id="btn_consultar">Consultar</button></li></ul>';
 	$form .= '<table id="order_number_result"></table>';
 
