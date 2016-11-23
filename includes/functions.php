@@ -5,6 +5,98 @@ add_action( 'wp_ajax_nopriv_estadorep', 'reparaciones_ajax' );
 /* Add the [entry-views] shortcode. */
 add_shortcode( 'reparaciones_form', 'print_reparaciones_form' );
 
+
+//repair statuses costumizing 
+add_action("admin_menu","wprs_options_admin");
+add_action("admin_init","wprs_options_admin_init");
+add_action( 'admin_footer', 'wprs_ajax_settings_admin'); // Write our JS below here
+
+/**
+ * acá registramos los campos que usaremos en un nuestra configuración del plugins
+ * */
+if(!function_exists("wprs_options_admin_init"))
+{
+    function wprs_options_admin_init()
+    {
+    	//aqui registramos los campos que tendremos en la configuracion
+        register_setting("wprs-group","wprs_file_cvs");
+        register_setting("wprs-group","wprs_rute_cvs");
+    }
+}
+/**
+ * acá inicializamos el panel de nuestro Plugins
+ * */
+if(!function_exists("wprs_options_admin"))
+{
+    function wprs_options_admin()
+    {
+        add_options_page("Settings Repair Statuses","Settings Repair Statuses","manage_options","wprs_settings","wprs_get_options_admin");
+    }
+}
+/**
+ * acá creamos el código HTML con el que se muestra nuestro panel
+ * */
+if(!function_exists("wprs_get_options_admin"))
+{
+    function wprs_get_options_admin()
+    {
+       include_once("wprs_settings.php");
+    }
+}
+
+//load script settings 
+function wprs_ajax_settings_admin(){
+?>	
+<script type="text/javascript">
+	jQuery(document).ready(function($){
+		var rute = "";
+
+		jQuery(document).on('change','.radio_setting',function(){
+			rute = $(this).val();
+		});
+
+		jQuery(document).on('click','#submit_settings',function(e){
+			e.preventDefault();
+			jQuery(".message-ajax-setting").text("Enviando...");
+			jQuery(".message-ajax-setting").show(300);
+
+			//obtendremos los datos ajax
+		//	var inputFileImage = $("#wprs_file_cvs");
+			//var file = inputFileImage.files[0];
+			//var data_image = new FormData()
+			//enviar datos via ajax
+			var data = {
+				'action': 'save_wprs_settings',
+				'wprs_rute_cvs':rute
+				//'wprs_file_cvs':inputFileImage
+			};
+			// since 2.8 ajaxurl is always defined in the admin header and points to admin-ajax.php
+			jQuery.post(ajaxurl, data, function(response) {
+				//response
+				jQuery(".message-ajax-setting").text(response).delay(500).hide(500);
+			});
+
+		});
+	});	
+</script>
+<?php
+}
+//closed script settings
+add_action( 'wp_ajax_save_wprs_settings', 'save_wprs_settings_callback' );
+function save_wprs_settings_callback() {
+	$myrute = $_POST['wprs_rute_cvs'];
+	//save option
+	update_option( 'wprs_rute_cvs', $myrute );
+	echo "Guardado";
+	wp_die(); // this is required to terminate immediately and return a proper response
+}
+
+
+
+
+
+
+/*print reparaciones*/
 function print_reparaciones_form($attr = '') {
 	global $post;
 	/* Load the reparaciones JavaScript in the footer. */
@@ -108,7 +200,7 @@ function reparaciones_ajax() {
  * @since 0.1
  */
 function reparaciones_get_update( $order_n = 0 ) {
-	$file = trailingslashit( get_home_path() ) . 'ots/ordenesdetrabajo.txt';
+	$file = trailingslashit( get_home_path()) . 'ots/ordenesdetrabajo.txt';
 //	clearstatcache();
 	//$file = 'ordenesdetrabajo.txt';
 	$dev = '';
@@ -118,7 +210,8 @@ function reparaciones_get_update( $order_n = 0 ) {
 			if($estado[0]==$order_n) {
 				// 0       1        2                    3                 4           5                6                 7  8                          9 
 				//000002|ENTREGADO|OBS ESTADO ENTREGADO|22/02/2013 13:59|08/03/2013|SILVANA CHITARO|SEC.GAMA MYSTERE 4000||CAMBIO DE CARCAZA DELANTERA|31.00
-				$dev.= "<tr><td>Estado:</td><td>$estado[1]</td></tr>";
+
+				$dev.= "<tr><td>Estado:</td><td>".get_option('wprs_rute_cvs')."</td></tr>";
 				$dev.= "<tr><td>Descripción:</td><td>$estado[2]</td></tr>";
 				$dev.= "<tr><td>Recibido:</td><td>$estado[3]</td></tr>";
 				$dev.= "<tr><td>Entregado:</td><td>$estado[4]</td></tr>";
