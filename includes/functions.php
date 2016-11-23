@@ -59,16 +59,10 @@ function wprs_ajax_settings_admin(){
 			e.preventDefault();
 			jQuery(".message-ajax-setting").text("Enviando...");
 			jQuery(".message-ajax-setting").show(300);
-
-			//obtendremos los datos ajax
-		//	var inputFileImage = $("#wprs_file_cvs");
-			//var file = inputFileImage.files[0];
-			//var data_image = new FormData()
 			//enviar datos via ajax
 			var data = {
 				'action': 'save_wprs_settings',
 				'wprs_rute_cvs':rute
-				//'wprs_file_cvs':inputFileImage
 			};
 			// since 2.8 ajaxurl is always defined in the admin header and points to admin-ajax.php
 			jQuery.post(ajaxurl, data, function(response) {
@@ -87,7 +81,7 @@ function save_wprs_settings_callback() {
 	$myrute = $_POST['wprs_rute_cvs'];
 	//save option
 	update_option( 'wprs_rute_cvs', $myrute );
-	echo "Guardado";
+	echo "Guardado Exitosamente"; 
 	wp_die(); // this is required to terminate immediately and return a proper response
 }
 
@@ -211,7 +205,7 @@ function reparaciones_get_update( $order_n = 0 ) {
 				// 0       1        2                    3                 4           5                6                 7  8                          9 
 				//000002|ENTREGADO|OBS ESTADO ENTREGADO|22/02/2013 13:59|08/03/2013|SILVANA CHITARO|SEC.GAMA MYSTERE 4000||CAMBIO DE CARCAZA DELANTERA|31.00
 
-				$dev.= "<tr><td>Estado:</td><td>".get_option('wprs_rute_cvs')."</td></tr>";
+				$dev.= "<tr><td>Estado:</td><td>$estado[1]</td></tr>";
 				$dev.= "<tr><td>Descripción:</td><td>$estado[2]</td></tr>";
 				$dev.= "<tr><td>Recibido:</td><td>$estado[3]</td></tr>";
 				$dev.= "<tr><td>Entregado:</td><td>$estado[4]</td></tr>";
