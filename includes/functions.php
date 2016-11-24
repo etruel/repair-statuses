@@ -1,4 +1,7 @@
 <?php
+
+
+
 /* Add the entry views AJAX actions to the appropriate hooks. */
 add_action( 'wp_ajax_estadorep', 'reparaciones_ajax' );
 add_action( 'wp_ajax_nopriv_estadorep', 'reparaciones_ajax' );
@@ -6,10 +9,14 @@ add_action( 'wp_ajax_nopriv_estadorep', 'reparaciones_ajax' );
 add_shortcode( 'reparaciones_form', 'print_reparaciones_form' );
 
 
-//repair statuses costumizing 
+
+
+//configuracion para guardar los datos del settings aqui
+add_action( 'admin_head', 'wprs_settings_admin'); // Write our JS below here
+//Costumizando el settings para el menu y el formulario
 add_action("admin_menu","wprs_options_admin");
 add_action("admin_init","wprs_options_admin_init");
-add_action( 'admin_footer', 'wprs_ajax_settings_admin'); // Write our JS below here
+
 
 /**
  * acá registramos los campos que usaremos en un nuestra configuración del plugins
@@ -21,6 +28,7 @@ if(!function_exists("wprs_options_admin_init"))
     	//aqui registramos los campos que tendremos en la configuracion
         register_setting("wprs-group","wprs_file_cvs");
         register_setting("wprs-group","wprs_rute_cvs");
+        register_setting("wprs-group","wprs_character_separator");
     }
 }
 /**
@@ -43,50 +51,54 @@ if(!function_exists("wprs_get_options_admin"))
        include_once("wprs_settings.php");
     }
 }
-
 //load script settings 
-function wprs_ajax_settings_admin(){
-?>	
-<script type="text/javascript">
-	jQuery(document).ready(function($){
-		var rute = "";
+function wprs_settings_admin(){
 
-		jQuery(document).on('change','.radio_setting',function(){
-			rute = $(this).val();
-		});
+	function save_file_cvs($myrute){
+		$image    = $_FILES['wprs_file_cvs']['name'];
+  		$tmp_image   = $_FILES['wprs_file_cvs']['tmp_name'];
+  		$path = trailingslashit(get_home_path()).$myrute;
+  		$result_file = '';
+  		if($myrute!=""){
+	  		if(!is_dir($path)){
+	  			$result_file = false;
+	  			echo "<script> alert('No existe el directorio especificado'); </script>";
+			}else{
+				//preguntamos si ya existe la ots. Si no existe la creamos
+				if(!is_dir($path."/ots")) mkdir($path."/ots");
+				 //movemos la imagen a la ruta especificada
+		  		if(!empty($image)){
+		  			move_uploaded_file($tmp_image,$path."/ots"."/".$image);
+		  			$result_file =  $path."/ots"."/".$image;
+				}else{
+					$result_file = false;
 
-		jQuery(document).on('click','#submit_settings',function(e){
-			e.preventDefault();
-			jQuery(".message-ajax-setting").text("Enviando...");
-			jQuery(".message-ajax-setting").show(300);
-			//enviar datos via ajax
-			var data = {
-				'action': 'save_wprs_settings',
-				'wprs_rute_cvs':rute
-			};
-			// since 2.8 ajaxurl is always defined in the admin header and points to admin-ajax.php
-			jQuery.post(ajaxurl, data, function(response) {
-				//response
-				jQuery(".message-ajax-setting").text(response).delay(500).hide(500);
-			});
+				}
 
-		});
-	});	
-</script>
-<?php
+			}//cierre del else principal de mkdir
+		}else{
+			//colocar path desde el plugin por defecto
+			move_uploaded_file($tmp_image,$_POST['default_rute']."/".$image);
+		  	$result_file =  $_POST['default_rute']."/".$image;
+		}
+
+		return $result_file;
+	}//cierre de la funcion save_file_cvs
+
+
+	//guardar los datos  de settings aqui
+	if($_POST['submit_settings']){
+		$rute_cvs =  save_file_cvs($_POST['wprs_rute_cvs']);
+		//guardamos la ruta completa a utilizar 
+		if($rute_cvs!=false){
+			update_option('wprs_file_cvs',$rute_cvs);
+			update_option('wprs_rute_cvs',$_POST['wprs_rute_cvs']);
+			update_option('wprs_character_separator',$_POST['wprs_character_separator']);
+  			echo "<script> alert('Configuracion Actualizada'); </script>";
+		}
+	}
 }
-//closed script settings
-add_action( 'wp_ajax_save_wprs_settings', 'save_wprs_settings_callback' );
-function save_wprs_settings_callback() {
-	$myrute = $_POST['wprs_rute_cvs'];
-	//save option
-	update_option( 'wprs_rute_cvs', $myrute );
-	echo "Guardado Exitosamente"; 
-	wp_die(); // this is required to terminate immediately and return a proper response
-}
-
-
-
+//funcion a utilizar a la hora de guardar los datos
 
 
 
@@ -195,11 +207,14 @@ function reparaciones_ajax() {
  */
 function reparaciones_get_update( $order_n = 0 ) {
 	$file = trailingslashit( get_home_path()) . 'ots/ordenesdetrabajo.txt';
+	//obtenemos el directorio actual donde buscaremos el archivo que vamos a utilizar
+	//$file = trailingslashit(get_option('wprs_file_cvs'));
 //	clearstatcache();
 	//$file = 'ordenesdetrabajo.txt';
 	$dev = '';
 	if (is_file($file)) {
-		$estados = reparaciones_csv_2_array($file,'|');
+		//aqui colocaremos el separador del archivo por medio de la variable opcion que creamos
+		$estados = reparaciones_csv_2_array($file,get_option('wprs_character_separator'));
 		foreach($estados as $key => $estado) {
 			if($estado[0]==$order_n) {
 				// 0       1        2                    3                 4           5                6                 7  8                          9 
