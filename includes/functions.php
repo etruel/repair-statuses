@@ -5,6 +5,7 @@
 //creamos la clase para el settings
 class wprs_to_repair_settings {
 
+		
 		function __construct() {
 
 				/* Add the entry views AJAX actions to the appropriate hooks. */
@@ -13,19 +14,11 @@ class wprs_to_repair_settings {
 			/* Add the [entry-views] shortcode. */
 			add_shortcode( 'reparaciones_form', array(__CLASS__,'print_reparaciones_form' ));
 
-
-			add_action('admin_init', array(__CLASS__, 'register_settings'));
 			add_action('admin_menu',  array(__CLASS__, 'options_submenu_page'));
 
 		}
 
-		public static function register_settings() {
-			register_setting(
-				'wprs_file_cvs', 
-				'wprs_rute_cv',
-				'wprs_character_separator'
-			);
-		}
+
 		public static function options_submenu_page() {
 			add_submenu_page(
 				'options-general.php',          // admin page slug
@@ -38,8 +31,71 @@ class wprs_to_repair_settings {
 		}
 
 
+		public static function check_options(){
+			return get_option('wprs_options', array());
+		}
+
+		//opcion para guardar los datos
+		public static function save_file_cvs($myrute,$myfile){
+			$cvs_name   = $myfile['name'];
+	  		$tmp_cvs_name  = 	$myfile['tmp_name'];
+	  		//obtenemos la ruta del archivo
+	  		$path = trailingslashit(get_home_path()).$myrute;
+	  		$result_file = ''; //variable a retornar segun el resultado
+
+	  		if($myrute!=""){
+		  		if(!is_dir($path)){
+		  			$result_file = false;
+		  			echo "<script> alert('No existe el directorio especificado'); </script>";
+				}else{
+					//preguntamos si ya existe la ots. Si no existe la creamos con permisos
+					if(!is_dir($path."/ots")) mkdir($path."/ots",'777');
+					 //movemos la imagen a la ruta especificada
+			  		if(!empty($cvs_name)){
+			  			move_uploaded_file($tmp_cvs_name,$path."/ots"."/".$cvs_name);
+			  			$result_file =  $path."/ots"."/".$cvs_name;
+			  			chmod($result_file,"0777");
+					}else{
+						$result_file = false;
+					}
+				}//cierre del else principal de mkdir
+			}else{
+				//colocar path desde el plugin por defecto
+				move_uploaded_file($tmp_cvs_name,$_POST['default_rute']."/".$cvs_name);
+			  	$result_file =  $_POST['default_rute']."/".$cvs_name;
+			  	chmod($result_file,"0777");
+
+			  	//dando permisos para usuarios
+			}
+
+			@ini_set('safe_mode','Off'); //disable safe mode
+			@ini_set('ignore_user_abort','Off'); //Set PHP ini setting
+			@ini_set('memory_limit', "512M");
+
+			return $result_file;
+		}
+
+
 		//create template html
 		public static function options_page() {
+			//obtendremos todas las opciones
+			$check_options = get_option('wprs_options', array());
+			if ( 'POST' === $_SERVER[ 'REQUEST_METHOD' ] ) {
+				check_admin_referer('wprs-settings');
+				//uploadfile	
+				$rute_cvs =  self::save_file_cvs($_POST['wprs_rute_cvs'],$_FILES['wprs_file_cvs']);
+				if($rute_cvs!=false){
+					//variables de opcion
+					$check_options['wprs_rute_cvs'] = $_POST['wprs_rute_cvs'];
+					$check_options['wprs_character_separator'] = $_POST['wprs_character_separator'];
+					
+					//guardamos todas las opciones
+					$check_options = update_option('wprs_options',$check_options);
+					//volvemos a llamar los campos en settings
+					$check_options = get_option('wprs_options', array());
+					echo "<script> alert('Configuracion Actualizada'); </script>";
+				}
+			}	
 			include_once("wprs_settings.php");	
 		
 		}
@@ -166,7 +222,7 @@ class wprs_to_repair_settings {
 						// 0       1        2                    3                 4           5                6                 7  8                          9 
 						//000002|ENTREGADO|OBS ESTADO ENTREGADO|22/02/2013 13:59|08/03/2013|SILVANA CHITARO|SEC.GAMA MYSTERE 4000||CAMBIO DE CARCAZA DELANTERA|31.00
 
-						$dev.= "<tr><td>Estado:</td><td>".trailingslashit(get_option('wprs_file_cvs'))."</td></tr>";
+						$dev.= "<tr><td>Estado:</td><td>$estado[1]</td></tr>";
 						$dev.= "<tr><td>Descripción:</td><td>$estado[2]</td></tr>";
 						$dev.= "<tr><td>Recibido:</td><td>$estado[3]</td></tr>";
 						$dev.= "<tr><td>Entregado:</td><td>$estado[4]</td></tr>";

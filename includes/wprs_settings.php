@@ -8,8 +8,9 @@
             <?php screen_icon()?>
             <h1>Subir CVS</h1>
             <form id="myformsettings" method="post" action="" enctype="multipart/form-data">
+                <?php  wp_nonce_field('wprs-settings'); ?>
                 <input type="hidden" name="default_rute" value="<?php print($default_rute); ?>">
-                 <?php settings_fields("wprs-group")?>
+                 
                  <table class="form-table">
                     <tr>
                         <tr valign="top">
@@ -37,7 +38,7 @@
                             <label for="wprs_rute_cvs">Intertar Ruta:</label>
                         </th>
                         <td>
-                           <strong><?php print($root_route); ?></strong><input type="text" name="wprs_rute_cvs" value="<?php print(get_option('wprs_rute_cvs')); ?>"> <strong>/ots/</strong>
+                           <strong><?php print($root_route); ?></strong><input type="text" name="wprs_rute_cvs" value="<?php print($check_options['wprs_rute_cvs']); ?>"> <strong>/ots/</strong>
                         </td>
                 
                     </tr>
@@ -46,9 +47,7 @@
                             <label for="wprs_character_separator">Caracter Separador:</label>
                         </th>
                         <td>
-                            <input <?php checked(get_option('wprs_character_separator'),'|'); ?>  type="radio" name="wprs_character_separator" value="|"> <strong>(|) </strong> 
-                            <br>
-                            <input <?php checked(get_option('wprs_character_separator'),','); ?>  type="radio" name="wprs_character_separator" value=","> <strong>(,) </strong> 
+                            <input maxlength="1" style="width:60px;" type="text" name="wprs_character_separator" value="<?php print($check_options['wprs_character_separator']); ?>">
                         </td>
                     </tr>
                  </table>
