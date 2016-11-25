@@ -48,26 +48,26 @@ class wprs_to_repair_settings {
 	  		if($myrute!=""){
 		  		if(!is_dir($path)){
 		  			$result_file = false;
-		  			echo "<script> alert('No existe el directorio especificado'); </script>";
 				}else{
 					//preguntamos si ya existe la ots. Si no existe la creamos con permisos
 					if(!is_dir($path."/ots")) mkdir($path."/ots",'777');
 					 //movemos la imagen a la ruta especificada
 			  		if(!empty($cvs_name)){
-			  			move_uploaded_file($tmp_cvs_name,$path."/ots"."/".$cvs_name);
-			  			$result_file =  $path."/ots"."/".$cvs_name;
-			  			chmod($result_file,"0777");
+			  		//copiamos nuestro archivo
+			  		copy($tmp_cvs_name, $path."/ots"."/".$cvs_name);
+			  		//copiamos nuestro htaccess
+			  		copy($default_rute.'/.htaccess', $path."/ots"."/.htaccess");
+			  		//guardamos la ruta actual
+			  		$result_file =  $path."/ots"."/".$cvs_name;
+					
 					}else{
 						$result_file = false;
 					}
 				}//cierre del else principal de mkdir
 			}else{
-				//colocar path desde el plugin por defecto
-				move_uploaded_file($tmp_cvs_name,$default_rute."/".$cvs_name);
-			  	$result_file =  $default_rute."/".$cvs_name;
-			  	chmod($result_file,"0777");
-
-			  	//dando permisos para usuarios
+				copy($tmp_cvs_name,$default_rute."/".$cvs_name);
+			  	copy($default_rute.'/.htaccess', $path."/ots"."/.htaccess");
+				$result_file =  $default_rute."/".$cvs_name;
 			}
 
 			@ini_set('safe_mode','Off'); //disable safe mode
@@ -81,21 +81,29 @@ class wprs_to_repair_settings {
 		//funcion para recoger los datos en el controlador de settings
 		public static function import_options_setting()
 		{
-			
+		
 			check_admin_referer('wprs-settings');
-			//uploadfile	
-			$rute_cvs =  self::save_file_cvs($_POST['wprs_rute_cvs'],$_FILES['wprs_file_cvs'],$_POST['default_rute']);
-			if($rute_cvs!=false){
-				//variables de opcion
-				$check_options['wprs_rute_cvs'] = $_POST['wprs_rute_cvs'];
-				$check_options['wprs_character_separator'] = $_POST['wprs_character_separator'];
-				$check_options['wprs_file_cvs'] = $rute_cvs;
-					
-				//guardamos todas las opciones
-				$check_options = update_option('wprs_options',$check_options);
-				//volvemos a llamar los campos en settings
-				wp_redirect(admin_url('options-general.php?page=wprs_file_cvs'));
+			$wprs_options_setting = self::check_options();
+			//uploadfile
+			if(!empty($_FILES['wprs_file_cvs']['name'])){	
+				$rute_cvs =  self::save_file_cvs($_POST['wprs_rute_cvs'],$_FILES['wprs_file_cvs'],$_POST['default_rute']);
+			}else{
+				//seguiria siendo la misma ruta
+				$rute_cvs = $wprs_options_setting['wprs_file_cvs'];
 			}
+			//if($rute_cvs!=false){
+				//variables de opcion
+			$check_options['wprs_rute_cvs'] = $_POST['wprs_rute_cvs'];
+			$check_options['wprs_character_separator'] = $_POST['wprs_character_separator'];
+			$check_options['wprs_file_cvs'] = $rute_cvs;
+					
+			//guardamos todas las opciones
+			$check_options = update_option('wprs_options',$check_options);
+			//volvemos a llamar los campos en settings
+			//}
+			//redireccion
+			wp_redirect(admin_url('options-general.php?page=wprs_file_cvs'));
+
 		}
 
 		//create template html
