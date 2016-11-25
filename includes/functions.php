@@ -165,7 +165,6 @@ class wprs_to_repair_settings {
 						e.preventDefault();
 					});	
 					$("#btn_consultar").click( function() {
-						alert("le diste click");
 						$('#order_number_result').html('<img src="<?php echo includes_url('images/spinner.gif'); ?>">');
 						$.post( 
 							"<?php echo admin_url( 'admin-ajax.php' ); ?>", 
@@ -224,15 +223,15 @@ class wprs_to_repair_settings {
 		 * @since 0.1
 		 */
 		public static function reparaciones_get_update( $order_n = 0 ) {
-			$file = trailingslashit( get_home_path()) . 'ots/ordenesdetrabajo.txt';
-			//obtenemos el directorio actual donde buscaremos el archivo que vamos a utilizar
-			//$file = trailingslashit(get_option('wprs_file_cvs'));
-		//	clearstatcache();
-			//$file = 'ordenesdetrabajo.txt';
+			$wprs_options_setting = self::check_options();
+			//$file = trailingslashit( get_home_path()) . 'ots/ordenesdetrabajo.txt';
+			//	clearstatcache();
+			//obtendremoos el directorio del archivo para mostrarlo en la tabla fronts
+			$file = $wprs_options_setting['wprs_file_cvs'];
 			$dev = '';
 			if (file_exists($file)) {
 				//aqui colocaremos el separador del archivo por medio de la variable opcion que creamos
-				$estados = self::reparaciones_csv_2_array($file,'|');
+				$estados = self::reparaciones_csv_2_array($file,$wprs_options_setting['wprs_character_separator']);
 				foreach($estados as $key => $estado) {
 					if($estado[0]==$order_n) {
 						// 0       1        2                    3                 4           5                6                 7  8                          9 
