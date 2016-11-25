@@ -7,10 +7,10 @@
             ?>
             <?php screen_icon()?>
             <h1>Subir CVS</h1>
-            <form id="myformsettings" method="post" action="" enctype="multipart/form-data">
+            <form id="myformsettings" method="post" action="<?php print(admin_url('admin-post.php')); ?>" enctype="multipart/form-data">
                 <?php  wp_nonce_field('wprs-settings'); ?>
-                <input type="hidden" name="default_rute" value="<?php print($default_rute); ?>">
-                 
+                <input type="hidden" name="action" value="wprs_import_options_setting">
+                <input type="hidden" name="default_rute" value="<?php print($default_rute); ?>"> 
                  <table class="form-table">
                     <tr>
                         <tr valign="top">
@@ -18,7 +18,7 @@
                             <label>Directorio Actual => </label>
                         </th>
                         <td>
-                             <strong><?php print(get_option('wprs_file_cvs')); ?></strong>
+                             <strong><?php print($check_options['wprs_file_cvs']); ?></strong>
                         </td>
                     </tr>
 
@@ -28,7 +28,7 @@
                             <label for="wprs_opciones_titulo">Archivo CVS: </label>
                         </th>
                         <td>
-                            <input type="file" id="wprs_file_cvs" name="wprs_file_cvs" value="<?php echo get_option("wprs_opciones_titulo"); ?>" />
+                            <input type="file" id="wprs_file_cvs" name="wprs_file_cvs" value="<?php print($check_options['wprs_file_cvs']); ?>" />
                             <br />
                             <small></small>
                         </td>

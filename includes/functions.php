@@ -6,15 +6,17 @@
 class wprs_to_repair_settings {
 
 		
-		function __construct() {
+		function __construct() {	
 
-				/* Add the entry views AJAX actions to the appropriate hooks. */
+			//pasando los datos via post
+			add_action( 'admin_post_wprs_import_options_setting', array(__CLASS__, 'import_options_setting'));
+			/* Add the entry views AJAX actions to the appropriate hooks. */
 			add_action( 'wp_ajax_estadorep', array(__CLASS__,'reparaciones_ajax' ));
 			add_action( 'wp_ajax_nopriv_estadorep', array(__CLASS__,'reparaciones_ajax' ));
 			/* Add the [entry-views] shortcode. */
 			add_shortcode( 'reparaciones_form', array(__CLASS__,'print_reparaciones_form' ));
-
 			add_action('admin_menu',  array(__CLASS__, 'options_submenu_page'));
+
 
 		}
 
@@ -36,7 +38,7 @@ class wprs_to_repair_settings {
 		}
 
 		//opcion para guardar los datos
-		public static function save_file_cvs($myrute,$myfile){
+		public static function save_file_cvs($myrute,$myfile,$default_rute){
 			$cvs_name   = $myfile['name'];
 	  		$tmp_cvs_name  = 	$myfile['tmp_name'];
 	  		//obtenemos la ruta del archivo
@@ -61,8 +63,8 @@ class wprs_to_repair_settings {
 				}//cierre del else principal de mkdir
 			}else{
 				//colocar path desde el plugin por defecto
-				move_uploaded_file($tmp_cvs_name,$_POST['default_rute']."/".$cvs_name);
-			  	$result_file =  $_POST['default_rute']."/".$cvs_name;
+				move_uploaded_file($tmp_cvs_name,$default_rute."/".$cvs_name);
+			  	$result_file =  $default_rute."/".$cvs_name;
 			  	chmod($result_file,"0777");
 
 			  	//dando permisos para usuarios
@@ -76,29 +78,35 @@ class wprs_to_repair_settings {
 		}
 
 
+		//funcion para recoger los datos en el controlador de settings
+		public static function import_options_setting()
+		{
+			
+			check_admin_referer('wprs-settings');
+			//uploadfile	
+			$rute_cvs =  self::save_file_cvs($_POST['wprs_rute_cvs'],$_FILES['wprs_file_cvs'],$_POST['default_rute']);
+			if($rute_cvs!=false){
+				//variables de opcion
+				$check_options['wprs_rute_cvs'] = $_POST['wprs_rute_cvs'];
+				$check_options['wprs_character_separator'] = $_POST['wprs_character_separator'];
+				$check_options['wprs_file_cvs'] = $rute_cvs;
+					
+				//guardamos todas las opciones
+				$check_options = update_option('wprs_options',$check_options);
+				//volvemos a llamar los campos en settings
+				wp_redirect(admin_url('options-general.php?page=wprs_file_cvs'));
+			}
+		}
+
 		//create template html
-		public static function options_page() {
+		public static function options_page()
+		{
 			//obtendremos todas las opciones
 			$check_options = get_option('wprs_options', array());
-			if ( 'POST' === $_SERVER[ 'REQUEST_METHOD' ] ) {
-				check_admin_referer('wprs-settings');
-				//uploadfile	
-				$rute_cvs =  self::save_file_cvs($_POST['wprs_rute_cvs'],$_FILES['wprs_file_cvs']);
-				if($rute_cvs!=false){
-					//variables de opcion
-					$check_options['wprs_rute_cvs'] = $_POST['wprs_rute_cvs'];
-					$check_options['wprs_character_separator'] = $_POST['wprs_character_separator'];
-					
-					//guardamos todas las opciones
-					$check_options = update_option('wprs_options',$check_options);
-					//volvemos a llamar los campos en settings
-					$check_options = get_option('wprs_options', array());
-					echo "<script> alert('Configuracion Actualizada'); </script>";
-				}
-			}	
-			include_once("wprs_settings.php");	
-		
+			include_once("wprs_settings.php");
 		}
+
+
 
 
 
