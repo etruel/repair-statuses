@@ -1,7 +1,9 @@
 <style type="text/css">
-    #myformsettings{border:1px solid #C5C5C5;  background:-o-linear-gradient(#fff,#E4E4E4); background:-moz-linear-gradient(#fff,#E4E4E4); background:-webkit-linear-gradient(#fff,#E4E4E4);   width: 90%;padding: 10px;margin-top: -15px;}
+    #myformsettings{border:1px solid #C5C5C5;  background:-o-linear-gradient(#fff,#E4E4E4); background:-moz-linear-gradient(#fff,#E4E4E4); background:-webkit-linear-gradient(#fff,#E4E4E4);   width: 950px; overflow: hidden;padding: 10px;margin-top: -15px;}
    h1.title-setting{text-shadow: 1px 1px 1px #000;background-color: #3399CC;color: white;padding: 15px 10px;width: 50%;font-size: 20px;border: 1px solid #006799; border-bottom: 3px solid #277399;}
    .table-setting tr th label{color:#3399CC; font-weight: bold;}
+   .image_formulario{color:#3399CC; font-weight: bold; position:relative; float: right; margin-top: -180px; margin-right: 150px; opacity: 0.7; }
+   .image_formulario span{font-size: 340px;}
 </style>
 <div class="wpap form-setting">
             <?php 
@@ -63,7 +65,9 @@
                  <p class="submit">
                  <input type="submit"  name="submit_settings" id="submit_settings" class="button button-primary" value="Guardar cambios">
                  </p>
-            </form>
+                 <!--imagen de formulario-->
+                 <h3 class="image_formulario"><span class="dashicons dashicons-admin-generic"></span></h3>
+        </form>
 </div>
 <script type="text/javascript">
     jQuery(document).ready(function($){
