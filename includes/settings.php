@@ -139,7 +139,7 @@ class wprs_to_repair_settings {
 			//obtendremos todas las opciones
 			$check_options = get_option('wprs_options', array());
 			//mostramos el template
-			include_once("wprs_settings.php");
+			include_once("wprs_form_settings.php");
 			//desps de esto mostramos el mensaje de alerta si existe
 			if(isset($_GET['msj']) && !empty($_GET['msj'])){echo "<script> alert('".$_GET['msj']."'); </script>";}
 		}
