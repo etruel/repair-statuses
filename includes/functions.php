@@ -37,31 +37,55 @@ class wprs_to_repair_settings {
 			return get_option('wprs_options', array());
 		}
 
-		//opcion para guardar los datos
+		//opcion para guardar los datos al escoger un archivo
 		public static function save_file_cvs($myrute,$myfile,$default_rute){
 			$cvs_name   = $myfile['name'];
 	  		$tmp_cvs_name  = 	$myfile['tmp_name'];
+	  		$msj_temp = '';
+
 	  		//obtenemos la ruta del archivo
 	  		$path = trailingslashit(get_home_path()).$myrute;
 	  		$result_file = ''; //variable a retornar segun el resultado
 
 	  		if($myrute!=""){
-		  		if(!is_dir($path)){
+	  			//al tener ots de ruta se colocara en carpeta raiz
+	  			if($myrute=='ots'){
+	  				//si no existe la carpeta en raiz creamos el path ots
+					if(!is_dir($path)) mkdir($path,'777');
+					if(!empty($cvs_name)){
+				  		//copiamos nuestro archivo
+				  		copy($tmp_cvs_name, $path."/".$cvs_name);
+				  		//copiamos nuestro htaccess
+				  		copy($default_rute.'/.htaccess', $path."/.htaccess");
+				  		//guardamos la ruta actual
+				  		$result_file =  $path."/".$cvs_name;
+						
+					}else{
+
+						$result_file = false;
+						$msj_temp = 'Error al intentar guardar el archivo';
+					}
+
+				//EN ESTA CONDICION PREGUNTAMOS SI NO EXISTE OTRA CARPETA
+	  			}else if(!is_dir($path)){
+	  				$msj_temp = 'No existe el directorio especificado';
 		  			$result_file = false;
 				}else{
 					//preguntamos si ya existe la ots. Si no existe la creamos con permisos
 					if(!is_dir($path."/ots")) mkdir($path."/ots",'777');
 					 //movemos la imagen a la ruta especificada
 			  		if(!empty($cvs_name)){
-			  		//copiamos nuestro archivo
-			  		copy($tmp_cvs_name, $path."/ots"."/".$cvs_name);
-			  		//copiamos nuestro htaccess
-			  		copy($default_rute.'/.htaccess', $path."/ots"."/.htaccess");
-			  		//guardamos la ruta actual
-			  		$result_file =  $path."/ots"."/".$cvs_name;
-					
+				  		//copiamos nuestro archivo
+				  		copy($tmp_cvs_name, $path."/ots"."/".$cvs_name);
+				  		//copiamos nuestro htaccess
+				  		copy($default_rute.'/.htaccess', $path."/ots"."/.htaccess");
+				  		//guardamos la ruta actual
+				  		$result_file =  $path."/ots"."/".$cvs_name;
+						
 					}else{
 						$result_file = false;
+						$msj_temp = 'Error al intentar guardar el archivo';
+
 					}
 				}//cierre del else principal de mkdir
 			}else{
@@ -74,7 +98,7 @@ class wprs_to_repair_settings {
 			@ini_set('ignore_user_abort','Off'); //Set PHP ini setting
 			@ini_set('memory_limit', "512M");
 
-			return $result_file;
+			return array($result_file,$msj_temp);
 		}
 
 
@@ -86,23 +110,26 @@ class wprs_to_repair_settings {
 			$wprs_options_setting = self::check_options();
 			//uploadfile
 			if(!empty($_FILES['wprs_file_cvs']['name'])){	
-				$rute_cvs =  self::save_file_cvs($_POST['wprs_rute_cvs'],$_FILES['wprs_file_cvs'],$_POST['default_rute']);
+				//vamos a mostrar los errores y todo
+				list($rute_cvs,$msj_setting) = self::save_file_cvs($_POST['wprs_rute_cvs'],$_FILES['wprs_file_cvs'],$_POST['default_rute']);
 			}else{
-				//seguiria siendo la misma ruta
+				//seguiria siendo la misma rut
 				$rute_cvs = $wprs_options_setting['wprs_file_cvs'];
 			}
-			//if($rute_cvs!=false){
+			if($rute_cvs!=false){
 				//variables de opcion
-			$check_options['wprs_rute_cvs'] = $_POST['wprs_rute_cvs'];
-			$check_options['wprs_character_separator'] = $_POST['wprs_character_separator'];
-			$check_options['wprs_file_cvs'] = $rute_cvs;
-					
-			//guardamos todas las opciones
-			$check_options = update_option('wprs_options',$check_options);
-			//volvemos a llamar los campos en settings
-			//}
+				$check_options['wprs_rute_cvs'] = $_POST['wprs_rute_cvs'];
+				$check_options['wprs_character_separator'] = $_POST['wprs_character_separator'];
+				$check_options['wprs_file_cvs'] = $rute_cvs;
+						
+				//guardamos todas las opciones
+				$check_options = update_option('wprs_options',$check_options);
+				//volvemos a llamar los campos en settings
+			}
+			//vamos a acomodar los mensajes
+			$msj_setting= str_replace(' ','+',$msj_setting);  
 			//redireccion
-			wp_redirect(admin_url('options-general.php?page=wprs_file_cvs'));
+			wp_redirect(admin_url('options-general.php?page=wprs_file_cvs&msj='.$msj_setting));
 
 		}
 
@@ -111,7 +138,10 @@ class wprs_to_repair_settings {
 		{
 			//obtendremos todas las opciones
 			$check_options = get_option('wprs_options', array());
+			//mostramos el template
 			include_once("wprs_settings.php");
+			//desps de esto mostramos el mensaje de alerta si existe
+			if(isset($_GET['msj']) && !empty($_GET['msj'])){echo "<script> alert('".$_GET['msj']."'); </script>";}
 		}
 
 
