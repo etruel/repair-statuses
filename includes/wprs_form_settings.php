@@ -1,6 +1,7 @@
 <style type="text/css">
-    #myformsettings{ background-color: white;width: 90%;padding: 10px;box-shadow: 1px 1px 5px #ccc;margin-top: -18px;}
-   h1.title-setting{background-color: #3399CC;color: white;padding: 15px 10px;width: 50%;border-top-left-radius: 5px;border-top-right-radius: 5px;font-size: 20px;border-top: 2px solid #006799;border-left: 2px solid #006799;border-right: 2px solid #006799;}
+    #myformsettings{border:1px solid #C5C5C5;  background:-o-linear-gradient(#fff,#E4E4E4); background:-moz-linear-gradient(#fff,#E4E4E4); background:-webkit-linear-gradient(#fff,#E4E4E4);   width: 90%;padding: 10px;margin-top: -15px;}
+   h1.title-setting{text-shadow: 1px 1px 1px #000;background-color: #3399CC;color: white;padding: 15px 10px;width: 50%;font-size: 20px;border: 1px solid #006799; border-bottom: 3px solid #277399;}
+   .table-setting tr th label{color:#3399CC; font-weight: bold;}
 </style>
 <div class="wpap form-setting">
             <?php 
@@ -8,16 +9,16 @@
                 $root_route = trailingslashit(get_home_path());
             ?>
             <?php screen_icon()?>
-            <h1 class='title-setting'>Configuración Repair-Statuses</h1>
+            <h1 class='title-setting'><span class="dashicons dashicons-hammer"></span> Configuración Repair-Statuses</h1>
             <form id="myformsettings" method="post" action="<?php print(admin_url('admin-post.php')); ?>" enctype="multipart/form-data">
                 <?php  wp_nonce_field('wprs-settings'); ?>
                 <input type="hidden" name="action" value="wprs_import_options_setting">
                 <input type="hidden" name="default_rute" value="<?php print($default_rute); ?>"> 
-                 <table class="form-table">
+                 <table class="form-table table-setting">
                     <tr>
                         <tr valign="top">
                         <th scope="row">
-                            <label>Directorio CVS Actual => </label>
+                            <label><span class="dashicons dashicons-admin-page"></span> Directorio CVS Actual: </label>
                         </th>
                         <td>
                              <strong><?php print($check_options['wprs_file_cvs']); ?></strong>
@@ -27,7 +28,7 @@
                     </tr>
                     <tr valign="top">
                         <th scope="row">
-                            <label for="wprs_opciones_titulo">Archivo CVS: </label>
+                            <label for="wprs_opciones_titulo"><span class="dashicons dashicons-format-aside"></span> Archivo CVS: </label>
                         </th>
                         <td>
                             <input type="file" id="wprs_file_cvs" name="wprs_file_cvs" value="<?php print($check_options['wprs_file_cvs']); ?>" />
@@ -37,11 +38,11 @@
                     </tr>
                     <tr valign="top">
                         <th scope="row">
-                            <label for="wprs_rute_cvs">Insertar Ruta CVS:</label>
+                            <label for="wprs_rute_cvs"><span class="dashicons dashicons-category"></span> Insertar Ruta CVS:</label>
                         </th>
                         <td>
                             <input type="hidden" id="ruta_actual" value="<?php print($check_options['wprs_rute_cvs']); ?>">
-                           <strong><?php print($root_route); ?></strong><input type="text" id="wprs_rute_cvs" name="wprs_rute_cvs" value="<?php print($check_options['wprs_rute_cvs']); ?>">
+                           <strong><?php print($root_route); ?></strong><input type="text" id="wprs_rute_cvs" name="wprs_rute_cvs" placeholder="ruta" value="<?php print($check_options['wprs_rute_cvs']); ?>">
                             <p class='readme_setting'>Ingresar una ruta existente en el cual se agregaran por defecto la carpeta <b>/ots/</b> <br>
                                 <span style="font-weight: bold;color:red;">NOTA: Para guardar en carpeta RAIZ ingresar en ruta solo 'ots'</span>
                             </p>
@@ -50,7 +51,7 @@
                     </tr>
                     <tr valign="top">
                         <th scope="row">
-                            <label for="wprs_character_separator">Caracter Separador:</label>
+                            <label for="wprs_character_separator"><span class="dashicons dashicons-image-filter"></span> Caracter Separador:</label>
                         </th>
                         <td>
                             <input maxlength="1" style="width:60px;" type="text" name="wprs_character_separator" value="<?php print($check_options['wprs_character_separator']); ?>">
