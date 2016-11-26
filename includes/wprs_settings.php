@@ -1,25 +1,6 @@
 <style type="text/css">
-    #myformsettings{
-        background-color: white;
-        width: 90%;
-        padding: 10px;
-        box-shadow: 1px 1px 5px #ccc;
-        margin-top: -18px;
-    }
-   h1.title-setting{
-        background-color: #3399CC;
-        color: white;
-        padding: 15px 10px;
-        width: 50%;
-        border-top-left-radius: 5px;
-        border-top-right-radius: 5px;
-        font-size: 20px;
-        border-top: 2px solid #006799;
-        border-left: 2px solid #006799;
-        border-right: 2px solid #006799;
-
-    }
-
+    #myformsettings{ background-color: white;width: 90%;padding: 10px;box-shadow: 1px 1px 5px #ccc;margin-top: -18px;}
+   h1.title-setting{background-color: #3399CC;color: white;padding: 15px 10px;width: 50%;border-top-left-radius: 5px;border-top-right-radius: 5px;font-size: 20px;border-top: 2px solid #006799;border-left: 2px solid #006799;border-right: 2px solid #006799;}
 </style>
 <div class="wpap form-setting">
             <?php 
