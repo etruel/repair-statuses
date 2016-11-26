@@ -48,7 +48,7 @@ class REPARA {
 		add_action( 'plugins_loaded', array($this,'repara_git_updater') );
 	}
 	private function includes() {
-		require_once REPARA_PLUGIN_DIR . 'includes/functions.php'; 
+		require_once REPARA_PLUGIN_DIR . 'includes/settings.php'; 
 		do_action('REPARA_include_files');
 		
 	}
