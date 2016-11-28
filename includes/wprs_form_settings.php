@@ -5,6 +5,8 @@
    .image_formulario{color:#3399CC; font-weight: bold; position:relative; float: right; margin-top: -180px; margin-right: 150px; opacity: 0.7; }
    .image_formulario span{font-size: 340px;}
 </style>
+
+
 <div class="wpap form-setting">
             <?php 
                 $default_rute = trailingslashit(get_home_path()).'wp-content/plugins/repair-statuses/ots';

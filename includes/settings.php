@@ -34,7 +34,14 @@ class wprs_to_repair_settings {
 
 
 		public static function check_options(){
-			return get_option('wprs_options', array());
+			$options_settings = get_option('wprs_options', array());
+			//definimos las variables
+   			$options_settings['wprs_rute_cvs'] = (isset($options_settings['wprs_rute_cvs'])) ? $options_settings['wprs_rute_cvs']  : '';    
+   			$options_settings['wprs_character_separator'] = (isset($options_settings['wprs_character_separator'])) ? $options_settings['wprs_character_separator']  : '';    
+   			$options_settings['wprs_file_cvs'] = (isset($options_settings['wprs_file_cvs'])) ? $options_settings['wprs_file_cvs']  : '';    
+			
+			//devolvemos variables declaradas
+   			return $options_settings;
 		}
 
 		//opcion para guardar los datos al escoger un archivo
@@ -121,6 +128,7 @@ class wprs_to_repair_settings {
 				$check_options['wprs_rute_cvs'] = $_POST['wprs_rute_cvs'];
 				$check_options['wprs_character_separator'] = $_POST['wprs_character_separator'];
 				$check_options['wprs_file_cvs'] = $rute_cvs;
+				$check_options['wprs_example'] = $_POST['example'];
 						
 				//guardamos todas las opciones
 				$check_options = update_option('wprs_options',$check_options);
@@ -137,16 +145,14 @@ class wprs_to_repair_settings {
 		public static function options_page()
 		{
 			//obtendremos todas las opciones
-			$check_options = get_option('wprs_options', array());
+			//$check_options = get_option('wprs_options', array());
+			$check_options = self::check_options();
+
 			//mostramos el template
 			include_once("wprs_form_settings.php");
 			//desps de esto mostramos el mensaje de alerta si existe
 			if(isset($_GET['msj']) && !empty($_GET['msj'])){echo "<script> alert('".$_GET['msj']."'); </script>";}
 		}
-
-
-
-
 
 
 				/*print reparaciones*/
