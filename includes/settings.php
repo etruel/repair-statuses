@@ -128,7 +128,6 @@ class wprs_to_repair_settings {
 				$check_options['wprs_rute_cvs'] = $_POST['wprs_rute_cvs'];
 				$check_options['wprs_character_separator'] = $_POST['wprs_character_separator'];
 				$check_options['wprs_file_cvs'] = $rute_cvs;
-				$check_options['wprs_example'] = $_POST['example'];
 						
 				//guardamos todas las opciones
 				$check_options = update_option('wprs_options',$check_options);
