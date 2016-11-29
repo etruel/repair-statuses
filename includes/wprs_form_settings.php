@@ -1,5 +1,5 @@
 <style type="text/css">
-    #myformsettings{border:1px solid #C5C5C5;  background:-o-linear-gradient(#fff,#E4E4E4); background:-moz-linear-gradient(#fff,#E4E4E4); background:-webkit-linear-gradient(#fff,#E4E4E4);   width: 950px; overflow: hidden;padding: 10px;margin-top: -15px;}
+#myformsettings{border:1px solid #C5C5C5;  background:-o-linear-gradient(#fff,#E4E4E4); background:-moz-linear-gradient(#fff,#E4E4E4); background:-webkit-linear-gradient(#fff,#E4E4E4);   width: 950px; overflow: hidden;padding: 10px;margin-top: -15px;}
    h1.title-setting{text-shadow: 1px 1px 1px #000;background-color: #3399CC;color: white;padding: 15px 10px;width: 50%;font-size: 20px;border: 1px solid #006799; border-bottom: 3px solid #277399;}
    .table-setting tr th label{color:#3399CC; font-weight: bold;}
    .image_formulario{color:#3399CC; font-weight: bold; position:relative; float: right; margin-top: -180px; margin-right: 150px; opacity: 0.7; }
@@ -13,7 +13,7 @@
                 $root_route = trailingslashit(get_home_path());
             ?>
             <?php screen_icon()?>
-            <h1 class='title-setting'><span class="dashicons dashicons-hammer"></span> ConfiguraciÃ³n Repair-Statuses</h1>
+            <h1 class='title-setting'><span class="dashicons dashicons-hammer"></span> Configuración Repair-Statuses</h1>
             <form id="myformsettings" method="post" action="<?php print(admin_url('admin-post.php')); ?>" enctype="multipart/form-data">
                 <?php  wp_nonce_field('wprs-settings'); ?>
                 <input type="hidden" name="action" value="wprs_import_options_setting">
@@ -79,7 +79,7 @@
         var file = '';
 
         jQuery(document).on('click','#submit_settings',function(e){
-            //ya tenemos ambos datos esta pequeÃ±a validacion es para saber que vamos a cambiar de directorio
+            //ya tenemos ambos datos esta pequeña validacion es para saber que vamos a cambiar de directorio
             file = $("#wprs_file_cvs").val();
             ruta_cambio = $("#wprs_rute_cvs").val();
             if(ruta_actual!=ruta_cambio && file==''){
