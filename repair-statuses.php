@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: Repair statuses
-Plugin URI: https://ftuavargas:ftuavargas@bitbucket.org/etruel/repair-statuses
+Plugin URI: https://bitbucket.org/etruel/repair-statuses
 Description: Read the info from a hosted csv file and allow the clients to see its repair status from a Wordpress page via ajax 
 Version: 1.3
 Author: esteban
