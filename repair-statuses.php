@@ -2,7 +2,6 @@
 /*
 Plugin Name: Repair statuses
 Plugin URI: https://ftuavargas:ftuavargas@bitbucket.org/etruel/repair-statuses
-Git URI: ttps://ftuavargas:ftuavargas@bitbucket.org/etruel/repair-statuses
 Description: Read the info from a hosted csv file and allow the clients to see its repair status from a Wordpress page via ajax 
 Version: 1.3
 Author: esteban
@@ -57,6 +56,7 @@ class REPARA {
 		if ( is_admin() && !class_exists( 'GPU_Controller' ) ) {
 			require_once dirname( __FILE__ ) . '/git-plugin-updates/git-plugin-updates.php';
 			add_action( 'plugins_loaded', 'GPU_Controller::get_instance', 20 );
+			add_filter( 'gpu_use_plugin_uri_header','__return_true' );
 		}
 	}
 	private function setupGlobals() {
